@@ -1,0 +1,33 @@
+spring:
+  profiles:
+    active: dev
+  application:
+    name: media-service
+  config:
+    import: "optional:configserver:"
+  cloud:
+    config:
+      uri: http://localhost:8888
+    stream:
+      kafka:
+        binder:
+          brokers: 143.198.83.9:9092
+    bus:
+      trace:
+        enabled: true
+      refresh:
+        enabled: true
+      env:
+        enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+  endpoint:
+    health:
+      show-details: always
+    refresh:
+      enabled: true

@@ -1,0 +1,72 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.3.5'
+	id 'io.spring.dependency-management' version '1.1.6'
+}
+
+group = 'com.khotixs'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(21)
+	}
+}
+
+ext {
+	set('springCloudVersion', "2023.0.3")
+}
+
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	//default
+	implementation 'org.springframework.boot:spring-boot-starter'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	runtimeOnly 'org.postgresql:postgresql'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	//for web
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+
+	//mapper
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.0.Beta1'
+	implementation 'org.mapstruct:mapstruct:1.6.0.Beta1'
+
+	//validation
+	implementation 'org.springframework.boot:spring-boot-starter-validation:3.2.4'
+
+	//minio
+	implementation 'io.minio:minio:8.5.10'
+
+	//test api
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.4.0'
+
+	//spring cloud for get config
+	implementation 'org.springframework.cloud:spring-cloud-starter'
+	implementation 'org.springframework.cloud:spring-cloud-starter-config'
+
+	//auto refresh config
+	implementation 'org.springframework.cloud:spring-cloud-starter-bus-kafka'
+
+	//monitoring
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}

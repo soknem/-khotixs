@@ -1,0 +1,48 @@
+spring:
+  application:
+    name: config-server
+
+  profiles:
+    active: native,git,dev,vault
+  cloud:
+    config:
+      enabled: true
+      server:
+        git:
+          search-paths:
+           - /service/**
+          uri: https://github.com/soknem/khotixs-config.git
+          default-label: main
+          clone-on-start: true
+
+        vault:
+          backend: secret
+          kv-version: 2
+          host: 143.198.83.9
+          port: 8200
+          authentication: token
+          token: root
+          scheme: http
+          profile-separator: /
+    bus:
+      enabled: true
+      refresh:
+        enabled: true
+
+  kafka:
+    bootstrap-servers:
+      - http://143.198.83.9:9092
+
+logging:
+  level:
+    org.springframework.cloud.config: DEBUG
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+server:
+  port: 8888
