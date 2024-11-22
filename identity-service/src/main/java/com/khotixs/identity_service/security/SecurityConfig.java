@@ -51,9 +51,11 @@ public class SecurityConfig {
 
     @Bean
     AuthorizationServerSettings authorizationServerSettings() {
-        return AuthorizationServerSettings.builder().build();
+        return AuthorizationServerSettings
+                .builder()
+                .issuer("http://localhost:9090")
+                .build();
     }
-
 
     @Bean
     @Order(1)
@@ -107,6 +109,15 @@ public class SecurityConfig {
 
         return http.build();
     }
+
+//    @Bean
+//    public AuthorizationServerSettings providerSetting() {
+//
+//        return AuthorizationServerSettings
+//                .builder()
+//                .issuer("http://localhost:9090")
+//                .build();
+//    }
 
 
     @Bean

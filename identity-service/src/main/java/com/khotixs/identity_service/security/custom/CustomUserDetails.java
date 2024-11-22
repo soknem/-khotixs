@@ -12,7 +12,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
+
 
 @Getter
 @Setter
@@ -24,10 +26,8 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
-        return user.getRoles().stream()
-                .flatMap(role -> role.getAuthorities().stream()) // Flatten authorities for each role
-                .map(authority -> new SimpleGrantedAuthority(authority.getAuthorityName())) // Convert to SimpleGrantedAuthority
-                .collect(Collectors.toSet());
+        return user.getUserRoles().stream().flatMap(userRole -> userRole.getRole().getAuthorities().stream())
+                        .map(authority -> new SimpleGrantedAuthority(authority.getAuthorityName())).collect(Collectors.toSet());
     }
 
 

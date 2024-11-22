@@ -1,11 +1,12 @@
 package com.khotixs.identity_service.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
-
 @Entity
 @Table(name = "roles")
 @Data
@@ -24,14 +25,16 @@ public class Role {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @ManyToMany(mappedBy = "roles")
-    private Set<User> users = new HashSet<>();
+    @OneToMany(mappedBy = "role")
+    @JsonBackReference
+    private Set<UserRole> userRoles;
 
     @ManyToMany
     @JoinTable(
-        name = "roles_authorities",
-        joinColumns = @JoinColumn(name = "role_id"),
-        inverseJoinColumns = @JoinColumn(name = "authority_id")
+            name = "roles_authorities",
+            joinColumns = @JoinColumn(name = "role_id"),
+            inverseJoinColumns = @JoinColumn(name = "authority_id")
     )
+    @JsonManagedReference
     private Set<Authority> authorities = new HashSet<>();
 }

@@ -1,3 +1,55 @@
 spring:
   application:
     name: portal-gateway
+
+  profiles:
+    active: dev
+  config:
+    import: "optional:configserver:"
+  cloud:
+    config:
+      uri: http://localhost:8888
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    gateway:
+      enabled: true
+    health:
+      show-details: always
+
+client-security-matchers: >
+  /login/**,
+  /oauth2/**,
+  /logout/**,
+  /en/**,
+  /auth/**,
+  /business/**,
+  /profile/**,
+  /api/v1/categories/**
+
+client-permit-matchers: >
+  /login/**,
+  /oauth2/**,
+  /en/**,
+  /auth/**,
+  /contactSupport/**,
+  /error/**,
+  /actuator/**,
+  /info/**,
+  /health/**,
+  /prometheus/**,
+  /business/**,
+  /profile/**,
+  /api/v1/categories/**
+
+server:
+  port: 8085

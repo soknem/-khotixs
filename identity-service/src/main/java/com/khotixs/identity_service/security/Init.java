@@ -3,9 +3,11 @@ package com.khotixs.identity_service.security;
 import com.khotixs.identity_service.domain.Authority;
 import com.khotixs.identity_service.domain.Role;
 import com.khotixs.identity_service.domain.User;
+import com.khotixs.identity_service.domain.UserRole;
 import com.khotixs.identity_service.feature.authority.AuthorityRepository;
 import com.khotixs.identity_service.feature.role.RoleRepository;
 import com.khotixs.identity_service.feature.user.UserRepository;
+import com.khotixs.identity_service.feature.user.UserRoleRepository;
 import com.khotixs.identity_service.security.repository.JpaRegisteredClientRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +38,7 @@ public class Init {
     private final AuthorityRepository authorityRepository;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final UserRoleRepository userRoleRepository;
 
     @PostConstruct
     void initUserDetails() {
@@ -43,16 +46,11 @@ public class Init {
 
             // Create authorities
             Authority userAuthority = saveAuthority("USER", "Regular user with basic privileges.");
-            Authority systemAuthority = saveAuthority("SYSTEM", "System-level authority.");
+
             Authority adminAuthority = saveAuthority("ADMIN", "Administrator with full privileges.");
-            Authority editorAuthority = saveAuthority("EDITOR", "Editor with content management privileges.");
-            Authority businessOwnerAuthority = saveAuthority("BUSINESS_OWNER", "Business owner with managerial privileges.");
-            Authority subscriberAuthority = saveAuthority("SUBSCRIBER", "Subscriber with limited access.");
 
             // Create roles and assign authorities
             Role adminRole = saveRole("ADMIN", "Admin role", Set.of(adminAuthority, userAuthority));
-            Role userRole = saveRole("USER", "User role", Set.of(userAuthority));
-            Role businessOwnerRole = saveRole("BUSINESS_OWNER", "Business owner role", Set.of(businessOwnerAuthority));
 
             // Create admin user
             User adminUser = User.builder()
@@ -75,8 +73,14 @@ public class Init {
                     .credentialsNonExpired(true)
                     .createdDate(LocalDateTime.now())
                     .createdBy("system")
-                    .roles(Set.of(adminRole, businessOwnerRole))
                     .build();
+
+            UserRole defaultUsrRole = new UserRole();
+
+            defaultUsrRole.setUser(adminUser);
+            defaultUsrRole.setRole(adminRole);
+
+//            adminUser.setUserRoles(Set.of(defaultUsrRole));
 
             // Save admin user
             userRepository.save(adminUser);
@@ -116,19 +120,19 @@ public class Init {
                 .build();
 
         var web = RegisteredClient.withId(UUID.randomUUID().toString())
-                .clientId("yelp")
-                .clientSecret(passwordEncoder.encode("qwerqwer")) // store in secret manager
+                .clientId("nextjs")
+                .clientSecret(passwordEncoder.encode("nextjs123")) // store in secret manager
                 .scopes(scopes -> {
                     scopes.add(OidcScopes.OPENID);
                     scopes.add(OidcScopes.PROFILE);
                     scopes.add(OidcScopes.EMAIL);
                 })
                 .redirectUris(uris -> {
-                    uris.add("http://127.0.0.1:9090/login/oauth2/code/yelp");
-                    uris.add("http://127.0.0.1:8168/login/oauth2/code/yelp");
+                    uris.add("http://localhost:8085/login/oauth2/code/nextjs");
+//                    uris.add("http://localhost:8168/login/oauth2/code/nextjs");
                 })
                 .postLogoutRedirectUris(uris -> {
-                    uris.add("http://127.0.0.1:8168");
+                    uris.add("http://localhost:8085");
                 })
                 .clientAuthenticationMethods(method -> {
                     method.add(ClientAuthenticationMethod.CLIENT_SECRET_BASIC);

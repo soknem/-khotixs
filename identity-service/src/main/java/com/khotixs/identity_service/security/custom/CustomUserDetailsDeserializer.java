@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.node.MissingNode;
 import com.khotixs.identity_service.domain.Authority;
 import com.khotixs.identity_service.domain.Role;
 import com.khotixs.identity_service.domain.User;
+import com.khotixs.identity_service.domain.UserRole;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -21,6 +22,9 @@ public class CustomUserDetailsDeserializer extends JsonDeserializer<CustomUserDe
 
     private static final TypeReference<Set<Authority>> AUTHORITY_SET_TYPE = new TypeReference<>() {};
     private static final TypeReference<Set<Role>> ROLE_SET_TYPE = new TypeReference<>() {};
+
+    private static final TypeReference<Set<UserRole>> SIMPLE_GRANTED_AUTHORITY_LIST = new TypeReference<>() {
+    };
     @Override
     public CustomUserDetails deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
         ObjectMapper mapper = (ObjectMapper) p.getCodec();
@@ -47,7 +51,8 @@ public class CustomUserDetailsDeserializer extends JsonDeserializer<CustomUserDe
         String familyName = readJsonNode(userJsonNode, "familyName").asText();
         String givenName = readJsonNode(userJsonNode, "givenName").asText();
         String dobString = readJsonNode(userJsonNode, "dob").asText(null);
-        LocalDate dob = dobString != null ? parseDate(dobString) : null;
+        LocalDate dob = (dobString != null && !dobString.isEmpty()) ? parseDate(dobString) : null;
+
         String gender = readJsonNode(userJsonNode, "gender").asText(null);
         String profileImage = readJsonNode(userJsonNode, "profileImage").asText(null);
         boolean emailVerified = readJsonNode(userJsonNode, "emailVerified").asBoolean();
@@ -55,16 +60,21 @@ public class CustomUserDetailsDeserializer extends JsonDeserializer<CustomUserDe
         String phoneNumber = readJsonNode(userJsonNode, "phoneNumber").asText(null);
 
         // Deserialize roles and authorities
-        Set<Role> roles = mapper.convertValue(readJsonNode(userJsonNode, "roles"), new TypeReference<Set<Role>>() {});
-        Set<Authority> userAuthorities = new HashSet<>();
-        roles.forEach(role -> userAuthorities.addAll(role.getAuthorities()));
+//        Set<Role> roles = mapper.convertValue(readJsonNode(userJsonNode, "roles"), new TypeReference<Set<Role>>() {});
+//        Set<Authority> userAuthorities = new HashSet<>();
+//        roles.forEach(role -> userAuthorities.addAll(role.getAuthorities()));
+
+        Set<UserRole> userRoles = mapper.convertValue(
+                rootNode.get("userRoles"),
+                SIMPLE_GRANTED_AUTHORITY_LIST
+        );
 
         // Populate User object
         User user = new User();
         user.setId(id);
         user.setUuid(uuid);
         user.setUsername(username);
-        user.setRoles(roles);
+        user.setUserRoles(userRoles);
         user.setEmail(email);
         user.setPassword(password);
         user.setFamilyName(familyName);

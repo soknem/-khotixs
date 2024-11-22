@@ -1,5 +1,6 @@
 package com.khotixs.identity_service.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,5 +26,6 @@ public class Authority {
     private String description;
 
     @ManyToMany(mappedBy = "authorities")
+    @JsonBackReference
     private Set<Role> roles = new HashSet<>();
 }
