@@ -84,6 +84,8 @@ public class Init {
 
             // Save admin user
             userRepository.save(adminUser);
+            userRoleRepository.save(defaultUsrRole);
+
 
             log.info("Admin user, roles, and authorities initialized successfully.");
         }

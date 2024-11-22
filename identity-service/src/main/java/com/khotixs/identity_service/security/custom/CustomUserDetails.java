@@ -28,6 +28,16 @@ public class CustomUserDetails implements UserDetails {
 
         return user.getUserRoles().stream().flatMap(userRole -> userRole.getRole().getAuthorities().stream())
                         .map(authority -> new SimpleGrantedAuthority(authority.getAuthorityName())).collect(Collectors.toSet());
+
+//        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+//
+//        user
+//                .getUserRoles()
+//                .forEach(userRole -> {
+//                    authorities.add(new SimpleGrantedAuthority(userRole.getRole().getRoleName()));
+//                });
+//
+//        return authorities;
     }
 
 

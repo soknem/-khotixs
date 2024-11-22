@@ -35,6 +35,6 @@ public class Role {
             joinColumns = @JoinColumn(name = "role_id"),
             inverseJoinColumns = @JoinColumn(name = "authority_id")
     )
-    @JsonManagedReference
-    private Set<Authority> authorities = new HashSet<>();
+//    @JsonManagedReference
+    private Set<Authority> authorities;
 }

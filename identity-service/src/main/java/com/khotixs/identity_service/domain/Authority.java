@@ -26,6 +26,6 @@ public class Authority {
     private String description;
 
     @ManyToMany(mappedBy = "authorities")
-    @JsonBackReference
-    private Set<Role> roles = new HashSet<>();
+//    @JsonBackReference
+    private Set<Role> roles;
 }
