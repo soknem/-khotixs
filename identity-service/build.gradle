@@ -4,6 +4,10 @@ plugins {
 	id 'io.spring.dependency-management' version '1.1.6'
 }
 
+ext {
+	springCloudVersion = "2023.0.3"
+}
+
 group = 'com.khotixs'
 version = '0.0.1-SNAPSHOT'
 
@@ -13,41 +17,18 @@ java {
 	}
 }
 
-ext {
-	set('springCloudVersion', "2023.0.3")
-}
-
-
 repositories {
 	mavenCentral()
 }
 
 dependencies {
-	//default
 	implementation 'org.springframework.boot:spring-boot-starter'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+//	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	runtimeOnly 'org.postgresql:postgresql'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-
-	//for web
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
-
-	//mapper
-	annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.0.Beta1'
-	implementation 'org.mapstruct:mapstruct:1.6.0.Beta1'
-
-	//validation
-	implementation 'org.springframework.boot:spring-boot-starter-validation:3.2.4'
-
-	//minio
-	implementation 'io.minio:minio:8.5.10'
-
-	//test api
-	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.4.0'
 
 	//spring cloud for get config
 	implementation 'org.springframework.cloud:spring-cloud-starter'
@@ -59,12 +40,24 @@ dependencies {
 	//monitoring
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
+	compileOnly 'org.mapstruct:mapstruct:1.5.5.Final'
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
+	annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
+
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-authorization-server'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	compileOnly 'org.projectlombok:lombok'
+
+	annotationProcessor 'org.projectlombok:lombok'
+
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
 
 }
 
 dependencyManagement {
 	imports {
-		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion"
 	}
 }
 

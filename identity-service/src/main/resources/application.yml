@@ -1,0 +1,91 @@
+spring:
+  profiles:
+    active: dev
+  application:
+    name: identity-service
+
+#  security:
+#    oauth2:
+#      client:
+#        registration:
+#          google:
+#            client-id: "905661943124-dnl5b9agf6j2luciql1m70km2ri9hrjq.apps.googleusercontent.com"
+#            client-secret: "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"
+#            scope:
+#              - "https://www.googleapis.com/auth/gmail.send"
+#            redirect-uri: "http://localhost:9090/login/oauth2/code/google"
+#            authorization-grant-type: authorization_code
+#            client-name: Google
+#            client-authentication-method: basic
+#            provider: google
+#        provider:
+#          google:
+#            authorization-uri: "https://accounts.google.com/o/oauth2/auth"
+#            token-uri: "https://oauth2.googleapis.com/token"
+#            user-info-uri: "https://www.googleapis.com/oauth2/v3/userinfo"
+#            user-name-attribute: "email"
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  datasource:
+    url: jdbc:postgresql://143.198.83.9:5430/oauth2
+    username: soknem
+    password: 123
+    driver-class-name: org.postgresql.Driver
+  servlet:
+    multipart:
+      max-request-size: 10MB
+      max-file-size: 10MB
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: sokname56@gmail.com
+    password: ehis ldbm otct hykc
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  config:
+    import: "optional:configserver:"
+  cloud:
+    config:
+      uri: http://localhost:8888
+    stream:
+      kafka:
+        binder:
+          brokers: 143.198.83.9:9092
+    bus:
+      trace:
+        enabled: true
+      refresh:
+        enabled: true
+      env:
+        enabled: true
+      enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+  endpoint:
+    health:
+      show-details: always
+    refresh:
+      enabled: true
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+    org.springframework.mail: DEBUG
+
+server:
+  port: 9090
