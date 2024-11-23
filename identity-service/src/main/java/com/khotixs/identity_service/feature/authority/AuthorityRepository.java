@@ -11,5 +11,7 @@ import java.util.Set;
 
 public interface AuthorityRepository extends JpaRepository<Authority,Long> {
 
-    List<Authority> findByRolesIn(Set<Role> roles);
+    Set<Authority> findByRolesIn(Set<Role> roles);
+
+    Set<Authority> findByAuthorityNameIn(Set<String> authorityName);
 }

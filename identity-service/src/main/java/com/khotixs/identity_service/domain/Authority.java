@@ -25,7 +25,7 @@ public class Authority {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @ManyToMany(mappedBy = "authorities")
+    @ManyToMany(mappedBy = "authorities",fetch = FetchType.EAGER)
 //    @JsonBackReference
     private Set<Role> roles;
 }

@@ -129,7 +129,6 @@ public class SecurityConfig {
             // Customize id_token
             if (context.getTokenType().getValue().equals("id_token")) {
                 context.getClaims()
-                        .claim("preferred_username", customUserDetails.getUsername()) // Add username as a claim
                         .claim("userId", customUserDetails.getUser().getUuid())        // User UUID
                         .claim("fullName", String.format("%s %s",                    // Full name as a claim
                                 customUserDetails.getUser().getFamilyName(),
@@ -148,9 +147,7 @@ public class SecurityConfig {
                         .id(authentication.getName())
                         .subject(authentication.getName())
                         .claim("scope", scopes)
-                        .claim("uuid", customUserDetails.getUser().getUuid())
-                        .claim("userFullName", String.format("%s %s", customUserDetails.getUser().getFamilyName(),
-                                customUserDetails.getUser().getGivenName()));
+                        .claim("uuid", customUserDetails.getUser().getUuid());
             }
         };
     }

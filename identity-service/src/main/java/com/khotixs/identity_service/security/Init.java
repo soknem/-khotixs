@@ -25,6 +25,7 @@ import org.springframework.stereotype.Component;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -41,25 +42,92 @@ public class Init {
     private final UserRoleRepository userRoleRepository;
 
     @PostConstruct
-    void initUserDetails() {
+    void init(){
         if (userRepository.count() < 1) {
+            initAuthorities();
+            initUser();
+            initAdmin();
+        }
 
-            // Create authorities
-            Authority userAuthority = saveAuthority("USER", "Regular user with basic privileges.");
+    }
 
-            Authority adminAuthority = saveAuthority("file:read", "read file");
+
+    void initUser() {
+        if (userRepository.count() < 2) {
+
+            Set<String> authorityNames= Set.of(
+                    "file:read",
+                    "file:write"
+            );
+
+            Set<Authority> authorities = authorityRepository.findByAuthorityNameIn(authorityNames);
 
             // Create roles and assign authorities
-            Role adminRole = saveRole("ADMIN", "Admin role", Set.of(adminAuthority, userAuthority));
+            Role userRole = saveRole("user", "user role", authorities);
+
+            // Create admin user
+            User user = User.builder()
+                    .uuid(UUID.randomUUID().toString())
+                    .username("user")
+                    .email("user@gmail.com")
+                    .password(passwordEncoder.encode("user"))
+                    .familyName("customer")
+                    .givenName("user")
+                    .profileImage("avatar.png")
+                    .coverImage("cover.png")
+                    .dob(LocalDate.now())
+                    .gender("Male")
+                    .phoneNumber("9876543210")
+                    .status(1)
+                    .emailVerified(true)
+                    .isEnabled(true)
+                    .accountNonExpired(true)
+                    .accountNonLocked(true)
+                    .credentialsNonExpired(true)
+                    .createdDate(LocalDateTime.now())
+                    .createdBy("system")
+                    .build();
+
+            UserRole defaultUsrRole = new UserRole();
+
+            defaultUsrRole.setUser(user);
+            defaultUsrRole.setRole(userRole);
+
+//            adminUser.setUserRoles(Set.of(defaultUsrRole));
+
+            // Save admin user
+            userRepository.save(user);
+            userRoleRepository.save(defaultUsrRole);
+
+
+            log.info("Admin user, roles, and authorities initialized successfully.");
+        }
+    }
+
+    void initAdmin() {
+        if (userRepository.count() < 2) {
+
+            Set<String> authorityNames= Set.of(
+                    "file:read",
+                    "file:write",
+                    "user:read",
+                    "user:write",
+                    "user:update",
+                    "user:delete"
+            );
+            Set<Authority> authorities = authorityRepository.findByAuthorityNameIn(authorityNames);
+
+            // Create roles and assign
+            Role adminRole = saveRole("ADMIN", "Admin role",authorities);
 
             // Create admin user
             User adminUser = User.builder()
                     .uuid(UUID.randomUUID().toString())
-                    .username("soknem")
-                    .email("soknem@gmail.com")
-                    .password(passwordEncoder.encode("soknem"))
-                    .familyName("pov")
-                    .givenName("soknem")
+                    .username("admin")
+                    .email("admin@gmail.com")
+                    .password(passwordEncoder.encode("admin"))
+                    .familyName("admin")
+                    .givenName("user")
                     .profileImage("avatar.png")
                     .coverImage("cover.png")
                     .dob(LocalDate.now())
@@ -75,21 +143,54 @@ public class Init {
                     .createdBy("system")
                     .build();
 
-            UserRole defaultUsrRole = new UserRole();
+            UserRole adminUserRole = new UserRole();
 
-            defaultUsrRole.setUser(adminUser);
-            defaultUsrRole.setRole(adminRole);
+            adminUserRole.setUser(adminUser);
+            adminUserRole.setRole(adminRole);
 
 //            adminUser.setUserRoles(Set.of(defaultUsrRole));
 
             // Save admin user
             userRepository.save(adminUser);
-            userRoleRepository.save(defaultUsrRole);
+            userRoleRepository.save(adminUserRole);
 
 
             log.info("Admin user, roles, and authorities initialized successfully.");
         }
     }
+
+    void initAuthorities() {
+        // Auto generate role (USER, CUSTOMER, STAFF, ADMIN)
+        if (authorityRepository.count() < 12) {
+            List<String> authorityNames = List.of(
+                    "payment:read",
+                    "payment:write",
+                    "payment:update",
+                    "payment:delete",
+                    "user:read",
+                    "user:write",
+                    "user:update",
+                    "user:delete",
+                    "file:read",
+                    "file:write",
+                    "file:update",
+                    "file:delete"
+            );
+
+            List<Authority> authorities = authorityNames.stream()
+                    .map(this::createAuthority)
+                    .toList();
+
+            authorityRepository.saveAll(authorities);
+        }
+    }
+
+    private Authority createAuthority(String authorityName) {
+        Authority authority = new Authority();
+        authority.setAuthorityName(authorityName);
+        return authority;
+    }
+
 
     private Authority saveAuthority(String name, String description) {
         Authority authority = Authority.builder()
