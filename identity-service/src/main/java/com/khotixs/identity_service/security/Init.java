@@ -51,7 +51,6 @@ public class Init {
 
     }
 
-
     void initUser() {
         if (userRepository.count() < 2) {
 
@@ -92,8 +91,6 @@ public class Init {
 
             defaultUsrRole.setUser(user);
             defaultUsrRole.setRole(userRole);
-
-//            adminUser.setUserRoles(Set.of(defaultUsrRole));
 
             // Save admin user
             userRepository.save(user);
