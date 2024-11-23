@@ -34,7 +34,7 @@ public class ImageController {
     }
 
     @GetMapping()
-    @PreAuthorize("hasAnyAuthority('file:read','SCOPE_openid')")
+    @PreAuthorize("hasAnyAuthority('user:read','file:read')")
     List<ImageResponse> loadAllMedia() {
         return imageService.loadAllImages();
     }
