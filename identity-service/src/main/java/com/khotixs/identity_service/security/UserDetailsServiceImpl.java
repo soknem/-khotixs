@@ -40,19 +40,17 @@
             User user = userRepository.findByUsernameAndIsEnabledTrue(username)
                     .orElseThrow(() -> new UsernameNotFoundException("User with email " + username + " not found"));
 
-            log.info("loadUserByUsername: {}", user);
-            log.info("FETCH_USER_ROLES: {}", user.getUserRoles());
+            Set<String> authorities = authorityRepository.findByRolesIn(
+                            userRoleRepository.findByUserId(user.getId()).stream()
+                                    .map(UserRole::getRole)
+                                    .collect(Collectors.toSet())
+                    ).stream()
+                    .map(Authority::getAuthorityName)
+                    .collect(Collectors.toSet());
 
-            Set<UserRole> userRoles = userRoleRepository.findByUserId(user.getId());
-            log.info("FETCH_USER_ROLES: {}", userRoles);
+            log.info("Authorities: {}", authorities);
 
-            Set<Role> rolesSet = userRoles.stream().map(UserRole::getRole).collect(Collectors.toSet());
-
-            Set<String> authorities=  authorityRepository.findByRolesIn(rolesSet.stream().toList()).stream().map(Authority::getAuthorityName).collect(Collectors.toSet());
-            log.info("Authorities: {}",authorities);
-
-
-            return new CustomUserDetails(user,authorities);
+            return new CustomUserDetails(user, authorities);
         }
 
     }
