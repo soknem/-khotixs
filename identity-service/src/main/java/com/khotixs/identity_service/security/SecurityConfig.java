@@ -110,15 +110,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-//    @Bean
-//    public AuthorizationServerSettings providerSetting() {
-//
-//        return AuthorizationServerSettings
-//                .builder()
-//                .issuer("http://localhost:9090")
-//                .build();
-//    }
-
 
     @Bean
     OAuth2TokenCustomizer<JwtEncodingContext> tokenCustomizer() {
@@ -126,17 +117,33 @@ public class SecurityConfig {
 
             // TODO: Custom JWT with authorization_code grant type and Authentication
             Authentication authentication = context.getPrincipal();
+
+            if (!(authentication.getPrincipal() instanceof CustomUserDetails)) {
+                throw new IllegalStateException("Authentication principal is not of type CustomUserDetails");
+            }
+
+            // Cast to CustomUserDetails
             CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
 
+
+            // Customize id_token
             if (context.getTokenType().getValue().equals("id_token")) {
-                context.getClaims().claim("reksmey1", "Mom Reksmey");
+                context.getClaims()
+                        .claim("preferred_username", customUserDetails.getUsername()) // Add username as a claim
+                        .claim("userId", customUserDetails.getUser().getUuid())        // User UUID
+                        .claim("fullName", String.format("%s %s",                    // Full name as a claim
+                                customUserDetails.getUser().getFamilyName(),
+                                customUserDetails.getUser().getGivenName()));
             }
 
             if (context.getTokenType().getValue().equals("access_token")) {
+
                 Set<String> scopes = new HashSet<>(context.getAuthorizedScopes());
+
                 authentication
                         .getAuthorities()
                         .forEach(grantedAuthority -> scopes.add(grantedAuthority.getAuthority()));
+
                 context.getClaims()
                         .id(authentication.getName())
                         .subject(authentication.getName())

@@ -29,7 +29,7 @@ public class Role {
     @JsonBackReference
     private Set<UserRole> userRoles;
 
-    @ManyToMany
+    @ManyToMany()
     @JoinTable(
             name = "roles_authorities",
             joinColumns = @JoinColumn(name = "role_id"),

@@ -23,7 +23,7 @@ public class UserRole {
     @JsonBackReference
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Role role;
 
 }

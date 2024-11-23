@@ -47,7 +47,7 @@ public class Init {
             // Create authorities
             Authority userAuthority = saveAuthority("USER", "Regular user with basic privileges.");
 
-            Authority adminAuthority = saveAuthority("ADMIN", "Administrator with full privileges.");
+            Authority adminAuthority = saveAuthority("file:read", "read file");
 
             // Create roles and assign authorities
             Role adminRole = saveRole("ADMIN", "Admin role", Set.of(adminAuthority, userAuthority));

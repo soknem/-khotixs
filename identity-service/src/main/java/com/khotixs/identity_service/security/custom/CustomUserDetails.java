@@ -1,10 +1,15 @@
 package com.khotixs.identity_service.security.custom;
 
+import com.khotixs.identity_service.domain.Authority;
 import com.khotixs.identity_service.domain.Role;
 import com.khotixs.identity_service.domain.User;
+import com.khotixs.identity_service.domain.UserRole;
+import jakarta.transaction.Transactional;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,27 +24,26 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @NoArgsConstructor
+//@RequiredArgsConstructor
+@Slf4j
 public class CustomUserDetails implements UserDetails {
 
     private User user;
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
+    private Collection<? extends GrantedAuthority> authorities;
 
-        return user.getUserRoles().stream().flatMap(userRole -> userRole.getRole().getAuthorities().stream())
-                        .map(authority -> new SimpleGrantedAuthority(authority.getAuthorityName())).collect(Collectors.toSet());
-
-//        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-//
-//        user
-//                .getUserRoles()
-//                .forEach(userRole -> {
-//                    authorities.add(new SimpleGrantedAuthority(userRole.getRole().getRoleName()));
-//                });
-//
-//        return authorities;
+//     Constructor to initialize user and authorities
+    public CustomUserDetails(User user, Set<String> authorities) {
+        this.user = user;
+        this.authorities = authorities.stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
     }
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return authorities;
+    }
 
     @Override
     public String getPassword() {

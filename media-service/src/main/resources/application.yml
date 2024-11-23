@@ -3,6 +3,11 @@ spring:
     active: dev
   application:
     name: media-service
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:9090
   config:
     import: "optional:configserver:"
   cloud:

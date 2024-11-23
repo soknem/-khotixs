@@ -69,6 +69,8 @@ public class CustomUserDetailsDeserializer extends JsonDeserializer<CustomUserDe
                 SIMPLE_GRANTED_AUTHORITY_LIST
         );
 
+        log.info("userRoles1: {}", userRoles);
+
         // Populate User object
         User user = new User();
         user.setId(id);
