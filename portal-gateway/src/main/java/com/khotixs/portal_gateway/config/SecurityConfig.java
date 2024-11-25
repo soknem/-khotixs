@@ -58,11 +58,10 @@ public class SecurityConfig {
                 .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
                 .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
-//                .cors(ServerHttpSecurity.CorsSpec::disable)
+                .cors(ServerHttpSecurity.CorsSpec::disable)
                 .logout(logoutSpec -> logoutSpec
                         .logoutSuccessHandler(serverLogoutSuccessHandler()));
 
-        http.cors(Customizer.withDefaults());
         return http.build();
     }
 
@@ -80,27 +79,4 @@ public class SecurityConfig {
 
         return redirectServerLogoutSuccessHandler;
     }
-
-    @Bean
-    CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(java.util.List.of("*", "http://localhost:3000","http://localhost:8000")); //allows React to access the API from
-        // origin
-        // on port
-        // 3000.
-        // Change accordingly
-        configuration.setAllowedMethods(java.util.List.of("GET", "POST", "PUT", "DELETE"));
-        configuration.addAllowedHeader("*");
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
-
-//    @Bean
-//    public SecurityWebFilterChain filterChain(ServerHttpSecurity http) {
-//        http.authorizeExchange(autorize -> autorize
-//                .pathMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-//                .anyExchange().authenticated())
-//                .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
-//        return http.build();     }
 }

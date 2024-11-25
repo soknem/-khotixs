@@ -46,8 +46,8 @@ client-permit-matchers: >
   /info/**,
   /health/**,
   /prometheus/**,
-  /profile/**
-#  /api/v1/images/**
+  /profile/**,
+  /api/v1/images/**
 
 server:
   port: 8000

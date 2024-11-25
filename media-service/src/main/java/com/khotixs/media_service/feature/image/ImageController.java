@@ -46,7 +46,7 @@ public class ImageController {
             }
     )
     @ResponseStatus(HttpStatus.CREATED)
-//    @PreAuthorize("hasAnyAuthority('user:read','file:read')")
+    @PreAuthorize("hasAnyAuthority('user:read','file:read')")
     @PostMapping(value = "",consumes = "multipart/form-data")
     ImageResponse uploadImage(@RequestPart MultipartFile file) {
 
@@ -62,7 +62,7 @@ public class ImageController {
             }
     )
     @GetMapping()
-//    @PreAuthorize("hasAnyAuthority('user:read','file:read')")
+    @PreAuthorize("hasAnyAuthority('user:read','file:read')")
     List<ImageResponse> loadAllMedia() {
         return imageService.loadAllImages();
     }
