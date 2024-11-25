@@ -46,8 +46,15 @@ client-permit-matchers: >
   /info/**,
   /health/**,
   /prometheus/**,
-  /profile/**,
-  /api/v1/images/**
+  /profile/**
+#  /api/v1/images/**
 
 server:
   port: 8000
+
+logging:
+  level:
+#    org.springframework.cloud.gateway: DEBUG
+    org:
+      springframework:
+        security: DEBUG

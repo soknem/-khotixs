@@ -211,11 +211,11 @@ public class Init {
 
         TokenSettings tokenSettings = TokenSettings.builder()
                 .accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED)
-                .accessTokenTimeToLive(Duration.ofMinutes(1))
+                .accessTokenTimeToLive(Duration.ofHours(1))
                 .build();
 
         ClientSettings clientSettings = ClientSettings.builder()
-                .requireProofKey(true)
+                .requireProofKey(false)
                 .requireAuthorizationConsent(false)
                 .build();
 
@@ -288,7 +288,7 @@ public class Init {
                 }) //TODO: grant_type:client_credentials, client_id & client_secret, redirect_uri
                 .authorizationGrantTypes(grantTypes -> {
                     grantTypes.add(AuthorizationGrantType.AUTHORIZATION_CODE);
-                    grantTypes.add(AuthorizationGrantType.REFRESH_TOKEN);
+//                    grantTypes.add(AuthorizationGrantType.REFRESH_TOKEN);
                 })
                 .clientSettings(clientSettings)
                 .tokenSettings(tokenSettings)

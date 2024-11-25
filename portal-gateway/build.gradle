@@ -47,6 +47,8 @@ dependencies {
 
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
+
+	implementation 'jakarta.servlet:jakarta.servlet-api:6.0.0'
 }
 
 dependencyManagement {

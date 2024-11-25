@@ -43,3 +43,7 @@ logging:
   level:
     io:
       minio: DEBUG
+    org:
+      springframework:
+        security: DEBUG
+    org.springframework.mail: DEBUG

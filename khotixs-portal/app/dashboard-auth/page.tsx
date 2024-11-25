@@ -1,4 +1,4 @@
-'use client';
+'use client'
 import { useState } from "react";
 import axios from "axios";
 
@@ -6,9 +6,11 @@ export default function Dashboard() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [files, setFiles] = useState([]);
   const [fileName, setFileName] = useState("");
-  const [testInput, setTestInput] = useState("");
 
-  const apiBaseUrl = "/api/v1/images"; // Update with your backend URL.
+  const apiBaseUrl = "http://localhost:8000/api/v1/images"; // Update with your backend URL.
+
+  // Static JWT token (replace with your actual JWT token)
+  const jwtToken = "eyJraWQiOiIzZmIxMWQ2ZC1hM2I1LTQ2M2QtYThiZi1hMmVkNTQ1NGRiNmEiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImF1ZCI6Im5leHRqczIiLCJuYmYiOjE3MzI1MDg5MDUsInNjb3BlIjpbInVzZXI6ZGVsZXRlIiwiZmlsZTpyZWFkIiwiZmlsZTp3cml0ZSIsIm9wZW5pZCIsInByb2ZpbGUiLCJ1c2VyOnJlYWQiLCJ1c2VyOndyaXRlIiwidXNlcjp1cGRhdGUiLCJlbWFpbCJdLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjkwOTAiLCJleHAiOjE3MzI1OTUzMDUsImlhdCI6MTczMjUwODkwNSwidXVpZCI6IjMyYzNhNjM4LWI1OTMtNDEzYS05ZDc2LTU0ZmEzNTNhZjg3OCIsImp0aSI6ImFkbWluIn0.J9UnE7DZG46j_D6G1wbrpWVDfB96ZYRB_3PVI030TiimLv2XQM7T2sUtrrb73ZOOw1DWoJVNlABjYgiwFjPOQnRzQWOw63OOIW2skGz_szsziQ3Ild5MobIN-cVou2YFfCz0Dkpp82AetVGT7qE0FrpNeTBL31r8-H0XWY5J0K4yBQFqIcWmKqJj8FPPX5zY5tFVQ4NIiCsrJkxa_uruNjIvaYB-n4kMHXtFKT_pYEMZMWKd8N4RCuEbLBXsnuSSzzYeNzXbY-xcrN9kMgocA_bbwMcqDryCcSD9crzEXVbuNdGd42C62lU9OrquUeVXPxDh2Aug3XCidQogbC0jsw";
 
   // Upload File
   const handleUpload = async () => {
@@ -18,7 +20,10 @@ export default function Dashboard() {
 
     try {
       const response = await axios.post(apiBaseUrl, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+        headers: { 
+          "Content-Type": "multipart/form-data", 
+          "Authorization": `Bearer ${jwtToken}` // Attach static JWT token
+        },
       });
       alert("File uploaded successfully!");
       console.log(response.data);
@@ -30,7 +35,11 @@ export default function Dashboard() {
   // Fetch All Files
   const fetchAllFiles = async () => {
     try {
-      const response = await axios.get(apiBaseUrl);
+      const response = await axios.get(apiBaseUrl, {
+        headers: {
+          "Authorization": `Bearer ${jwtToken}` // Attach static JWT token
+        }
+      });
       setFiles(response.data);
     } catch (error) {
       console.error("Error fetching files:", error);
@@ -41,7 +50,11 @@ export default function Dashboard() {
   const fetchFileByName = async () => {
     if (!fileName) return alert("Enter a file name!");
     try {
-      const response = await axios.get(`${apiBaseUrl}/${fileName}`);
+      const response = await axios.get(`${apiBaseUrl}/${fileName}`, {
+        headers: {
+          "Authorization": `Bearer ${jwtToken}` // Attach static JWT token
+        }
+      });
       console.log(response.data);
     } catch (error) {
       console.error("Error fetching file:", error);
@@ -52,26 +65,15 @@ export default function Dashboard() {
   const deleteFileByName = async () => {
     if (!fileName) return alert("Enter a file name!");
     try {
-      const response = await axios.delete(`${apiBaseUrl}/${fileName}`);
+      const response = await axios.delete(`${apiBaseUrl}/${fileName}`, {
+        headers: {
+          "Authorization": `Bearer ${jwtToken}` // Attach static JWT token
+        }
+      });
       alert("File deleted successfully!");
       console.log(response.data);
     } catch (error) {
       console.error("Error deleting file:", error);
-    }
-  };
-
-  // Test Endpoint
-  const handleTestPost = async () => {
-    if (!testInput) return alert("Please enter some text!");
-
-    try {
-      const response = await axios.post(`${apiBaseUrl}/test`, testInput, {
-        headers: { "Content-Type": "application/json" },
-      });
-      alert("Request successful!");
-      console.log(response.data);
-    } catch (error) {
-      console.error("Error making test request:", error);
     }
   };
 
@@ -83,7 +85,6 @@ export default function Dashboard() {
         <button onClick={fetchFileByName}>Get File</button>
         <button onClick={fetchAllFiles}>Get All Files</button>
         <button onClick={deleteFileByName}>Delete File</button>
-        <button onClick={handleTestPost}>Test Endpoint</button>
       </div>
 
       {/* Content Area */}
@@ -105,18 +106,7 @@ export default function Dashboard() {
               placeholder="Enter file name"
               value={fileName}
               onChange={(e) => setFileName(e.target.value)}
-              className="border p-2 text-amber-600"
-            />
-          </div>
-
-          {/* Test Endpoint Input */}
-          <div>
-            <input
-              type="text"
-              placeholder="Enter test input"
-              value={testInput}
-              onChange={(e) => setTestInput(e.target.value)}
-              className="border p-2 text-red-900"
+              className="border p-2"
             />
           </div>
 

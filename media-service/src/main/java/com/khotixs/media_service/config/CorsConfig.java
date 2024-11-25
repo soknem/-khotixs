@@ -10,7 +10,7 @@ public class CorsConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")  // Allow all paths
-                .allowedOrigins("http://localhost:3000") // Allow only the ngrok URL
+                .allowedOrigins("http://localhost:3000","http://localhost:8000") // Allow only the ngrok URL
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
                 .allowedHeaders("Authorization", "Content-Type", "*")  // Allow headers needed for requests
                 .allowCredentials(true);  // Allow credentials if needed

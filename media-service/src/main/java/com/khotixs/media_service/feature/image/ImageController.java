@@ -31,6 +31,12 @@ public class ImageController {
 
     private final ImageService imageService;
 
+    @PostMapping("/test")
+    @PreAuthorize("hasAnyAuthority('user:read','file:read')")
+    public String test(@RequestBody String test){
+        return test;
+    }
+
     @Operation(
             summary = "Upload an image",
             description = "Allows uploading a single image.",
