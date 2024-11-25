@@ -228,14 +228,15 @@ public class Init {
                     scopes.add(OidcScopes.EMAIL);
                 })
                 .redirectUris(uris -> {
-                    uris.add("http://localhost:8085/login/oauth2/code/nextjs");
+                    uris.add("http://localhost:8000/login/oauth2/code/nextjs");
 //                    uris.add("http://localhost:8168/login/oauth2/code/nextjs");
                 })
                 .postLogoutRedirectUris(uris -> {
-                    uris.add("http://localhost:8085");
+                    uris.add("http://localhost:8000");
                 })
                 .clientAuthenticationMethods(method -> {
                     method.add(ClientAuthenticationMethod.CLIENT_SECRET_BASIC);
+                    method.add(ClientAuthenticationMethod.CLIENT_SECRET_POST);
                 }) //TODO: grant_type:client_credentials, client_id & client_secret, redirect_uri
                 .authorizationGrantTypes(grantTypes -> {
                     grantTypes.add(AuthorizationGrantType.AUTHORIZATION_CODE);
@@ -245,12 +246,61 @@ public class Init {
                 .tokenSettings(tokenSettings)
                 .build();
 
-        RegisteredClient registeredClient = jpaRegisteredClientRepository.findByClientId("yelp");
+        RegisteredClient registeredClient = jpaRegisteredClientRepository.findByClientId("nextjs");
 
         if (registeredClient == null) {
             jpaRegisteredClientRepository.save(web);
         }
 
     }
+
+    @PostConstruct
+    void init2OAuth2() {
+
+        TokenSettings tokenSettings = TokenSettings.builder()
+                .accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED)
+                .accessTokenTimeToLive(Duration.ofDays(1))
+                .build();
+
+        ClientSettings clientSettings = ClientSettings.builder()
+                .requireProofKey(true)
+                .requireAuthorizationConsent(false)
+                .build();
+
+        var web = RegisteredClient.withId(UUID.randomUUID().toString())
+                .clientId("nextjs2")
+                .clientSecret(passwordEncoder.encode("nextjs123")) // store in secret manager
+                .scopes(scopes -> {
+                    scopes.add(OidcScopes.OPENID);
+                    scopes.add(OidcScopes.PROFILE);
+                    scopes.add(OidcScopes.EMAIL);
+                })
+                .redirectUris(uris -> {
+                    uris.add("http://localhost:8001/login/oauth2/code/nextjs2");
+//                    uris.add("http://localhost:8168/login/oauth2/code/nextjs");
+                })
+                .postLogoutRedirectUris(uris -> {
+                    uris.add("http://localhost:8001");
+                })
+                .clientAuthenticationMethods(method -> {
+                    method.add(ClientAuthenticationMethod.CLIENT_SECRET_BASIC);
+                    method.add(ClientAuthenticationMethod.CLIENT_SECRET_POST);
+                }) //TODO: grant_type:client_credentials, client_id & client_secret, redirect_uri
+                .authorizationGrantTypes(grantTypes -> {
+                    grantTypes.add(AuthorizationGrantType.AUTHORIZATION_CODE);
+                    grantTypes.add(AuthorizationGrantType.REFRESH_TOKEN);
+                })
+                .clientSettings(clientSettings)
+                .tokenSettings(tokenSettings)
+                .build();
+
+        RegisteredClient registeredClient = jpaRegisteredClientRepository.findByClientId("nextjs2");
+
+        if (registeredClient == null) {
+            jpaRegisteredClientRepository.save(web);
+        }
+
+    }
+
 
 }

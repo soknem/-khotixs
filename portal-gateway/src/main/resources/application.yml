@@ -32,9 +32,8 @@ client-security-matchers: >
   /logout/**,
   /en/**,
   /auth/**,
-  /business/**,
   /profile/**,
-  /api/v1/categories/**
+  /api/v1/images/**
 
 client-permit-matchers: >
   /login/**,
@@ -47,9 +46,8 @@ client-permit-matchers: >
   /info/**,
   /health/**,
   /prometheus/**,
-  /business/**,
   /profile/**,
-  /api/v1/categories/**
+  /api/v1/images/**
 
 server:
-  port: 8085
+  port: 8000

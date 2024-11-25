@@ -77,7 +77,7 @@ public class ImageServiceImpl implements ImageService {
         try {
             minioService.uploadFile(file, objectName);
         } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage()+"hi");
         }
 
         //create new object that store file metadata

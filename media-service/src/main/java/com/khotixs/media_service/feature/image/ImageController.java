@@ -3,6 +3,10 @@ package com.khotixs.media_service.feature.image;
 import com.khotixs.media_service.feature.image.dto.ImageResponse;
 import com.khotixs.media_service.feature.image.dto.ImageViewResponse;
 import io.minio.errors.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -22,19 +26,37 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/images")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 public class ImageController {
 
     private final ImageService imageService;
 
+    @Operation(
+            summary = "Upload an image",
+            description = "Allows uploading a single image.",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Image uploaded successfully"),
+                    @ApiResponse(responseCode = "403", description = "Unauthorized access", content = @Content)
+            }
+    )
     @ResponseStatus(HttpStatus.CREATED)
+//    @PreAuthorize("hasAnyAuthority('user:read','file:read')")
     @PostMapping(value = "",consumes = "multipart/form-data")
     ImageResponse uploadImage(@RequestPart MultipartFile file) {
 
         return imageService.uploadSingleImage(file);
     }
 
+    @Operation(
+            summary = "Load all images",
+            description = "Retrieves a list of all uploaded images.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "List of images retrieved successfully"),
+                    @ApiResponse(responseCode = "403", description = "Unauthorized access", content = @Content)
+            }
+    )
     @GetMapping()
-    @PreAuthorize("hasAnyAuthority('user:read','file:read')")
+//    @PreAuthorize("hasAnyAuthority('user:read','file:read')")
     List<ImageResponse> loadAllMedia() {
         return imageService.loadAllImages();
     }

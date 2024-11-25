@@ -38,3 +38,8 @@ management:
       enabled: true
 server:
   port: 8085
+
+logging:
+  level:
+    io:
+      minio: DEBUG
