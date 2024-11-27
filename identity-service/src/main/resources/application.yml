@@ -85,7 +85,27 @@ logging:
     org:
       springframework:
         security: DEBUG
+        web: DEBUG
     org.springframework.mail: DEBUG
+
+    com:
+      twilio: DEBUG
 
 server:
   port: 9090
+## Twilio Credentials
+#twilio:
+#  account:
+#    sid: ACb04e32f728caa95ac378c96025413050
+#  auth:
+#    token: e99b56c7f85acca0cf4e1b4ee72f000f
+#  phone:
+#    number: +18327569309
+
+twilio:
+  account:
+    sid: ACedbf8a9b306d6e5809eb35f2aea9c97a
+  auth:
+    token: edb68bf7b8f5bd389f19f56e974c8bc5
+  phone:
+    number: +16812339585

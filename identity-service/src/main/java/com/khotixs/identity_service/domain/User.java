@@ -1,6 +1,7 @@
 package com.khotixs.identity_service.domain;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.khotixs.identity_service.config.jpa.Auditable;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,11 +12,13 @@ import java.util.Set;
 
 @Entity
 @Table(name = "users")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
+@ToString
 @AllArgsConstructor
 @Builder
-public class User {
+public class User extends Auditable<String> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,14 +33,11 @@ public class User {
     @Column(nullable = false, length = 255)
     private String password;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = true, length = 255)
     private String email;
 
     @Column(nullable = false)
     private Integer status;
-
-    @Column(unique = true, length = 64)
-    private String facebookId;
 
     @Column(unique = true, length = 64)
     private String googleId;
@@ -81,16 +81,6 @@ public class User {
 
     @Column(columnDefinition = "BOOLEAN DEFAULT FALSE")
     private Boolean emailVerified;
-
-    @Column(nullable = false)
-    private LocalDateTime createdDate;
-
-    @Column(nullable = false, length = 100)
-    private String createdBy;
-
-    private LocalDateTime lastModifiedDate;
-
-    private String lastModifiedBy;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     private Set<UserRole> userRoles;

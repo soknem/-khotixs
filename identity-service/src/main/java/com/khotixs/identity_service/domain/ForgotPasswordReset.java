@@ -1,18 +1,21 @@
 package com.khotixs.identity_service.domain;
 
+import com.khotixs.identity_service.config.jpa.Auditable;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 
-@NoArgsConstructor
 @Getter
 @Setter
+@NoArgsConstructor
+@ToString
 @Entity
 @Table(name = "password_resets")
-public class PasswordResets  {
+public class ForgotPasswordReset  extends Auditable<String> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,5 +29,8 @@ public class PasswordResets  {
 
     @Column(nullable = false)
     private LocalDateTime expiryDateTime;
+
+    @OneToOne
+    private User user;
 
 }

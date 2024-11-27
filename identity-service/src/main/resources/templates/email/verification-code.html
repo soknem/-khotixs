@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Verification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            border-radius: 10px;
+            border: 2px solid #dcdcdc;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .verification-code {
+            font-size: 36px;
+            font-weight: bold;
+            color: #AC1ED2;
+            text-align: center;
+        }
+        h1 {
+            color: #AC1ED2;
+        }
+        p {
+            font-size: 16px;
+        }
+        span{
+            font-size: 30px;
+            font-weight: bolder;
+            color: #AC1ED2;
+        }
+        .sub-title{
+            font-size: 20px;
+            font-weight: bolder;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 14px;
+            text-align: center;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Welcome to KHOTIXS</h1>
+    <hr>
+    <p class="sub-title">Your Verify Code: </p>
+    <div class="verification-code">
+        <span th:text="${verificationCode}">${verificationCode}</span>
+    </div>
+    <p>Use this code to verify your account.</p>
+    <hr>
+    <div class="footer">
+        <p>&copy; 2024 Our Service. All rights reserved.</p>
+    </div>
+</div>
+</body>
+</html>

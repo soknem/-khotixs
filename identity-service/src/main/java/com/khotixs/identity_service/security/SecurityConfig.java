@@ -99,11 +99,11 @@ public class SecurityConfig {
                         .jwt(Customizer.withDefaults())
                 )
                 .formLogin(Customizer.withDefaults())
-                /*.formLogin(form -> form
-                        .loginPage("/oauth2/login")
-                        .usernameParameter("gp_account")
-                        .passwordParameter("gp_password")
-                )*/
+//                .formLogin(form -> form
+//                        .loginPage("/oauth2/login")
+//                        .usernameParameter("username")
+//                        .passwordParameter("password")
+//                )
                 .cors(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable);
 
