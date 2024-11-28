@@ -94,4 +94,5 @@ public class User {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     private Set<UserRole> userRoles;
+
 }

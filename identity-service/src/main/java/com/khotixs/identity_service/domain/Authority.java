@@ -28,4 +28,6 @@ public class Authority {
     @ManyToMany(mappedBy = "authorities",fetch = FetchType.EAGER)
 //    @JsonBackReference
     private Set<Role> roles;
+
 }
+

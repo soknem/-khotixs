@@ -11,4 +11,5 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public interface CustomUserDetailsMixin {
 
+
 }

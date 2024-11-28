@@ -26,4 +26,5 @@ public class UserRole {
     @ManyToOne(fetch = FetchType.EAGER)
     private Role role;
 
+
 }

@@ -37,4 +37,5 @@ public class Role {
     )
 //    @JsonManagedReference
     private Set<Authority> authorities;
+
 }
