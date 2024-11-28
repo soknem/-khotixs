@@ -113,10 +113,21 @@ const EmailVerificationPage: React.FC = () => {
           </div>
 
           {/* Submit Button */}
-          <div>
+          <div className="flex justify-between items-center">
+          <button
+            onClick={handleResend}
+            disabled={isResending}
+            className={`w-[200px] h-[40px] flex items-center justify-center text-[1rem] font-light rounded-md transition-transform transform hover:shadow-lg ${
+              isResending
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-blue-500 text-white hover:bg-blue-600"
+            }`}
+          >
+            {isResending ? "Resending..." : "Resend Verification Token"}
+          </button>
             <button
               type="submit"
-              className="w-full h-[40px] mt-10 flex items-center justify-center text-[1.5rem] font-light text-white rounded-lg p-5 border-2 border-transparent transition-transform transform hover:scale-105 hover:shadow-lg hover:border-[#00b09b] hover:brightness-90 bg-gradient-to-r from-[#00b09b] to-[#96c93d]"
+              className="w-[200px] h-[40px] flex items-center justify-center text-[1rem] font-light text-white rounded-md border-transparent transition-transform transform hover:shadow-lg hover:border-[#00b09b] hover:brightness-90 bg-gradient-to-r from-[#00b09b] to-[#96c93d]"
             >
               Verify Email
             </button>
@@ -125,17 +136,7 @@ const EmailVerificationPage: React.FC = () => {
 
         {/* Resend Button */}
         <div className="mt-6">
-          <button
-            onClick={handleResend}
-            disabled={isResending}
-            className={`w-full h-[40px] flex items-center justify-center text-[1.2rem] font-light rounded-lg p-5 border-2 transition-transform transform hover:scale-105 hover:shadow-lg ${
-              isResending
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-blue-500 text-white hover:bg-blue-600"
-            }`}
-          >
-            {isResending ? "Resending..." : "Resend Verification Token"}
-          </button>
+
         </div>
       </div>
     </div>

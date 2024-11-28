@@ -39,5 +39,6 @@ public class Role extends Auditable<String> {
             inverseJoinColumns = @JoinColumn(name = "authority_id")
     )
 //    @JsonManagedReference
+
     private Set<Authority> authorities;
 }
