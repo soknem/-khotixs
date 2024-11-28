@@ -1,5 +1,7 @@
 package com.khotixs.identity_service.feature.auth2;
 
+import com.khotixs.identity_service.feature.auth2.dto.ChangeForgotPasswordRequest;
+import com.khotixs.identity_service.feature.auth2.dto.ForgotPasswordRequest;
 import com.khotixs.identity_service.feature.user.dto.CustomerUserRegisterRequest;
 import com.khotixs.identity_service.feature.user.dto.CustomerUserWithPhoneNumberRegisterRequest;
 import com.khotixs.identity_service.feature.user.dto.UserResponse;
@@ -39,5 +41,15 @@ public class AuthController {
     @GetMapping("/me")
     public UserResponse getMe(Authentication authentication){
         return authService.findMe(authentication);
+    }
+
+    @PostMapping("/forgot-password")
+    public void forgotPassword(@RequestBody ForgotPasswordRequest forgotPasswordRequest){
+        authService.forgotPassword(forgotPasswordRequest);
+    }
+
+    @PostMapping("/change-forgot-password")
+    public void changeForgotPassword(@RequestBody ChangeForgotPasswordRequest changeForgotPasswordRequest){
+        authService.changeForgotPassword(changeForgotPasswordRequest);
     }
 }

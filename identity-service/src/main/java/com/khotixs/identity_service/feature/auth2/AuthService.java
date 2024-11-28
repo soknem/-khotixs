@@ -21,6 +21,8 @@ public interface AuthService {
 
     void forgotPassword(ForgotPasswordRequest forgotPasswordRequest);
 
+    void changeForgotPassword(ChangeForgotPasswordRequest changeForgotPasswordRequest);
+
     void isNotAuthenticated(Authentication authentication);
 
 }

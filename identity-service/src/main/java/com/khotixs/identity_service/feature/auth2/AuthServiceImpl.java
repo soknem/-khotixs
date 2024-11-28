@@ -1,29 +1,31 @@
 package com.khotixs.identity_service.feature.auth2;
 
-import com.khotixs.identity_service.domain.*;
+import com.khotixs.identity_service.domain.Passcode;
+import com.khotixs.identity_service.domain.Role;
+import com.khotixs.identity_service.domain.User;
+import com.khotixs.identity_service.domain.UserRole;
 import com.khotixs.identity_service.feature.auth2.dto.*;
-import com.khotixs.identity_service.feature.forgotpasswordreset.ForgotPasswordResetRepository;
+import com.khotixs.identity_service.feature.forgotpasswordreset.PasscodeRepository;
+import com.khotixs.identity_service.feature.forgotpasswordreset.PasscodeService;
+import com.khotixs.identity_service.feature.role.RoleRepository;
+import com.khotixs.identity_service.feature.user.UserRepository;
+import com.khotixs.identity_service.feature.user.UserRoleRepository;
 import com.khotixs.identity_service.feature.user.dto.CustomerUserRegisterRequest;
 import com.khotixs.identity_service.feature.user.dto.CustomerUserWithPhoneNumberRegisterRequest;
 import com.khotixs.identity_service.feature.user.dto.UserResponse;
 import com.khotixs.identity_service.feature.verification.email.EmailVerificationTokenService;
-import com.khotixs.identity_service.feature.role.RoleRepository;
-import com.khotixs.identity_service.feature.user.UserRepository;
-import com.khotixs.identity_service.feature.user.UserRoleRepository;
 import com.khotixs.identity_service.feature.verification.sms.SmsVerificationTokenService;
 import com.khotixs.identity_service.mapper.UserMapper;
 import com.khotixs.identity_service.util.RandomTokenGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.parsing.PassThroughSourceExtractor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -38,8 +40,9 @@ public class AuthServiceImpl implements AuthService {
     private final EmailVerificationTokenService emailVerificationTokenService;
     private final SmsVerificationTokenService smsVerificationTokenService;
     private final PasswordEncoder passwordEncoder;
-    private final ForgotPasswordResetRepository forgotPasswordResetRepository;
-    private final
+    private final PasscodeRepository passcodeRepository;
+    private final PasscodeService passcodeService;
+
 
     @Override
     public void registerCustomerUserWithEmail(CustomerUserRegisterRequest registerRequest) {
@@ -168,29 +171,43 @@ public class AuthServiceImpl implements AuthService {
 
         User user  = userRepository.findByUsernameAndIsEnabledTrue(forgotPasswordRequest.username()).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,String.format("user not found")));
 
+        Passcode foundToken = passcodeRepository.findByUser(user);
+
+        if(foundToken!=null){
+            passcodeRepository.deleteByUser(user);
+        }
+
         emailVerificationTokenService.generate(user);
 
     }
 
-    public void validatePasscode(PasscodeRequest passcodeRequest){
+    @Override
+    public void changeForgotPassword(ChangeForgotPasswordRequest changeForgotPasswordRequest) {
+
         // check if user attempts to verify exists or not
-        User foundUser = userRepository.findByUsernameAndIsEnabledTrue(passcodeRequest.username())
+        User foundUser = userRepository.findByUsernameAndIsEnabledTrue(changeForgotPasswordRequest.username())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with corresponding verification token"));
 
-        ForgotPasswordReset foundToken = forgotPasswordResetRepository.findByToken(passcodeRequest.token())
+        Passcode foundToken = passcodeRepository.findByToken(changeForgotPasswordRequest.token())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Verification token is invalid"));
 
-        if (this.isUsersToken(foundToken, foundUser)) {
-            if (this.isExpired(foundToken)) {
-                foundUser.setEmailVerified(true);
-                userRepository.save(foundUser);
-                emailVerificationTokenRepository.deleteByUser(foundUser);
-                return;
-            }
-        }
-    }
+        checkForPasswords(changeForgotPasswordRequest.password(), changeForgotPasswordRequest.confirmPassword());
 
-    public void changeForgottenPassword(){
+        if (passcodeService.isUsersToken(foundToken, foundUser)) {
+            if (passcodeService.isExpired(foundToken)) {
+                if(foundToken.getIsValidated()){
+                    foundUser.setPassword(passwordEncoder.encode(changeForgotPasswordRequest.password()));
+                    userRepository.save(foundUser);
+                    passcodeRepository.deleteByUser(foundUser);
+                }else{
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"The token has not been validated yet.");
+                }
+            }else{
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"The token expired");
+            }
+        }else{
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Invalid token");
+        }
 
     }
 
@@ -225,17 +242,5 @@ public class AuthServiceImpl implements AuthService {
         }
     }
 
-    public boolean isUsersToken(ForgotPasswordReset token, User user) {
-        return Objects.equals(user.getId(), token.getUser().getId());
-    }
-
-    public boolean isTokenInDb(VerificationToken token, String tokenToVerify) {
-        return token.getToken().equals(tokenToVerify);
-    }
-
-
-    public boolean isExpired(ForgotPasswordReset token) {
-        return !token.getExpiryDateTime().isBefore(LocalDateTime.now());
-    }
 
 }

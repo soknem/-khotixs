@@ -14,8 +14,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @ToString
 @Entity
-@Table(name = "password_resets")
-public class ForgotPasswordReset  extends Auditable<String> {
+@Table(name = "passcodes")
+public class Passcode  extends Auditable<String> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,6 +29,8 @@ public class ForgotPasswordReset  extends Auditable<String> {
 
     @Column(nullable = false)
     private LocalDateTime expiryDateTime;
+
+    private Boolean isValidated;
 
     @OneToOne
     private User user;
