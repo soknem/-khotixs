@@ -12,7 +12,7 @@ spring:
           search-paths:
            - /service/**
           uri: https://github.com/soknem/khotixs-config.git
-          default-label: login
+          default-label: loginix
           clone-on-start: true
 
         vault:
