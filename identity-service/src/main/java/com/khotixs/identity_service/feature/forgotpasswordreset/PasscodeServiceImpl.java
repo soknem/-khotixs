@@ -51,6 +51,7 @@ public class PasscodeServiceImpl implements PasscodeService {
             if (this.isExpired(foundToken)) {
 
                 foundToken.setIsValidated(true);
+                log.info("Token change: {}",foundToken);
                 passcodeRepository.save(foundToken);
 
                 return;
@@ -76,7 +77,7 @@ public class PasscodeServiceImpl implements PasscodeService {
     @Override
     public void generate(User user) {
 
-        LocalDateTime expiration = LocalDateTime.now().plusMinutes(1);
+        LocalDateTime expiration = LocalDateTime.now().plusMinutes(2);
 
         Passcode passcodeVerification = new Passcode();
 

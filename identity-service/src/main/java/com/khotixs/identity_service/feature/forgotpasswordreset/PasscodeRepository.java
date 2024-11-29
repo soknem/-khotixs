@@ -18,6 +18,6 @@ public interface PasscodeRepository extends JpaRepository<Passcode,Long> {
 
     @Transactional
     @Modifying
-    @Query("DELETE FROM VerificationToken e where e.user=:user")
+    @Query("DELETE FROM Passcode e where e.user=:user")
     void deleteByUser(@Param("user") User user);
 }

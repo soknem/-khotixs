@@ -1,9 +1,12 @@
 package com.khotixs.identity_service.feature.auth2;
 
+import com.khotixs.identity_service.domain.Passcode;
 import com.khotixs.identity_service.domain.Role;
 import com.khotixs.identity_service.domain.User;
 import com.khotixs.identity_service.domain.UserRole;
 import com.khotixs.identity_service.feature.auth2.dto.*;
+import com.khotixs.identity_service.feature.forgotpasswordreset.PasscodeRepository;
+import com.khotixs.identity_service.feature.forgotpasswordreset.PasscodeService;
 import com.khotixs.identity_service.feature.role.RoleRepository;
 import com.khotixs.identity_service.feature.user.UserRepository;
 import com.khotixs.identity_service.feature.user.UserRoleRepository;
@@ -36,8 +39,8 @@ public class AuthServiceImpl implements AuthService {
     private final EmailVerificationTokenService emailVerificationTokenService;
     private final SmsVerificationTokenService smsVerificationTokenService;
     private final PasswordEncoder passwordEncoder;
-//    private final PasscodeRepository passcodeRepository;
-//    private final PasscodeService passcodeService;
+    private final PasscodeRepository passcodeRepository;
+    private final PasscodeService passcodeService;
 
 
     @Override
@@ -169,13 +172,13 @@ public class AuthServiceImpl implements AuthService {
 
         User user  = userRepository.findByUsernameAndIsEnabledTrue(forgotPasswordRequest.username()).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,String.format("user not found")));
 
-//        Passcode foundToken = passcodeRepository.findByUser(user);
-//
-//        if(foundToken!=null){
-//            passcodeRepository.deleteByUser(user);
-//        }
+        Passcode foundToken = passcodeRepository.findByUser(user);
 
-        emailVerificationTokenService.generate(user);
+        if(foundToken!=null){
+            passcodeRepository.deleteByUser(user);
+        }
+
+        passcodeService.generate(user);
 
     }
 
@@ -186,26 +189,26 @@ public class AuthServiceImpl implements AuthService {
         User foundUser = userRepository.findByUsernameAndIsEnabledTrue(changeForgotPasswordRequest.username())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with corresponding verification token"));
 
-//        Passcode foundToken = passcodeRepository.findByToken(changeForgotPasswordRequest.token())
-//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Verification token is invalid"));
+        Passcode foundToken = passcodeRepository.findByToken(changeForgotPasswordRequest.token())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Verification token is invalid"));
 
         checkForPasswords(changeForgotPasswordRequest.password(), changeForgotPasswordRequest.confirmPassword());
 
-//        if (passcodeService.isUsersToken(foundToken, foundUser)) {
-//            if (passcodeService.isExpired(foundToken)) {
-//                if(foundToken.getIsValidated()){
-//                    foundUser.setPassword(passwordEncoder.encode(changeForgotPasswordRequest.password()));
-//                    userRepository.save(foundUser);
-//                    passcodeRepository.deleteByUser(foundUser);
-//                }else{
-//                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"The token has not been validated yet.");
-//                }
-//            }else{
-//                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"The token expired");
-//            }
-//        }else{
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Invalid token");
-//        }
+        if (passcodeService.isUsersToken(foundToken, foundUser)) {
+            if (passcodeService.isExpired(foundToken)) {
+                if(foundToken.getIsValidated()){
+                    foundUser.setPassword(passwordEncoder.encode(changeForgotPasswordRequest.password()));
+                    userRepository.save(foundUser);
+                    passcodeRepository.deleteByUser(foundUser);
+                }else{
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"The token has not been validated yet.");
+                }
+            }else{
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"The token expired");
+            }
+        }else{
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Invalid token");
+        }
 
     }
 

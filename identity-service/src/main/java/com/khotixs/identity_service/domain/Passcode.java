@@ -21,8 +21,6 @@ public class Passcode  extends Auditable<String> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, columnDefinition = "VARCHAR(128)")
-    private String email;
 
     @Column(nullable = false, columnDefinition = "VARCHAR(256)")
     private String token;
