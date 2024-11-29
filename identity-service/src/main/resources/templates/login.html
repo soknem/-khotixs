@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Form</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=KoHo:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700&display=swap"
+          rel="stylesheet">
+    <style>
+        body, html {
+            font-family: 'KoHo', sans-serif;
+            height: 200vh;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        @keyframes expandFullScreen {
+            0% {
+                top: -1800px;
+                left: -1180px;
+                width: 3544px;
+                height: 3267px;
+            }
+            100% {
+                top: -1800px;
+                left: -2955px;
+                width: 3544px;
+                height: 3267px;
+            }
+        }
+
+        @keyframes reverseExpandFullScreen {
+            0% {
+                top: -1800px;
+                left: -2955px;
+                width: 3544px;
+                height: 3267px;
+            }
+            100% {
+                top: -1800px;
+                left: -1180px;
+                width: 3544px;
+                height: 3267px;
+            }
+        }
+
+        .animate-expand {
+            animation: expandFullScreen 1s ease-in-out forwards;
+        }
+
+        .animate-reverse-expand {
+            animation: reverseExpandFullScreen 1s ease-in-out forwards;
+        }
+    </style>
+</head>
+
+<body class="h-[200vh] w-full flex items-center justify-center lg:inline">
+
+<main class="flex flex-col w-full h-[200vh] p-5 lg:p-0 lg:flex-row bg-[#f5f5f5] lg:bg-[url('@{/resources/static/images/bg-login.png}')] bg-cover bg-center">
+    <!-- Left Section -->
+    <section class="hidden text-white w-full h-full lg:flex lg:px-10 2xl:p-10 ">
+        <div class="flex flex-col">
+            <div class="relative z-10 w-full flex justify-center lg:mt-[100px] lg:ml-[30px] xl:ml-3">
+                <div>
+                    <h1 class="font-bold text-center lg:text-3xl lg:mb-9 xl:text-5xl xl:mb-9">WELCOME TO KHOTIXS</h1>
+                    <p class="text-md lg:text-lg lg:max-w-[450px] lg:ml-0 lg:font-semibold xl:ml-15 2xl:my-[60px] xl:text-xl 2xl:text-2xl xl:max-w-[640px]">
+                        KHOTIXS is an online platform designed to support ticket booking for events of all kinds.<br>
+                        Our website makes it easy to discover upcoming events, book tickets quickly, and access all the
+                        details you need in one place.
+                    </p>
+                </div>
+            </div>
+            <div class="z-10 lg:ml-[290px] lg:mt-[70px] xl:ml-[400px] 2xl:ml-[530px]">
+                <img th:src="@{/resources/static/images/Animation-inform.gif}" alt="animation"
+                     class="lg:h-[200px] lg:w-[200px]">
+            </div>
+        </div>
+        <div id="expandable-circle"
+             class="absolute rounded-[50%] w-[3544px] h-[3267px] bg-[#480028] lg:top-[-1800px] lg:left-[-2955px] xl:left-[-2840px] 2xl:left-[-2900px]">
+        </div>
+    </section>
+
+
+    <!-- Right Section -->
+    <section class="bg-[#f5f5f5] h-full w-full my-10 px-10 flex sm:px-20 lg:m-0 lg:p-5 2xl:p-10 lg:flex-col lg:items-center  ">
+        <section class="w-full max-w-md sm:max-w-lg lg:max-w-xl lg:mx-auto 2xl:max-w-xl">
+            <div class="flex justify-center my-[10px] 2xl:my-[25px]">
+                <img th:src="@{/resources/static/images/khotixs_logo.png}" alt="KHOTIXS Logo"
+                     class="max-w-[50px] h-[50px] lg:max-w-[80px] lg:h-[80px] 2xl:max-w-[150px] 2xl:h-[150px]">
+            </div>
+            <h2 class="text-gray-800 text-center text-lg font-bold my-[5px] lg:text-lg lg:font-bold lg:my-[10px] 2xl:text-2xl 2xl:font-bold 2xl:my-[25px]">
+                Login to your Account
+            </h2>
+            <p class="text-center text-gray-600 text-sm mb-[25px] lg:my-[10px] 2xl:text-sm 2xl:my-[25px]">
+                You can use your phone number or username
+            </p>
+            <section class="flex flex-row mx-[20px] my-[10px] sm:mx-[40px] lg:mx-[40px] lg:my-[20px] 2xl:mx-[50px] 2xl:my-[25px]">
+                <button class="w-full bg-[#480028] text-white rounded-tl-md rounded-bl-md border-2 border-[#480028] py-3 px-4">
+                    UserName
+                </button>
+                <button
+                        onclick="triggerReverseAnimation(event, '@{/login-phonenumber}')"
+                        class="w-full bg-[#ffffff] text-black rounded-tr-md rounded-br-md border-2 py-3 px-4">
+                    Phone Number
+                </button>
+            </section>
+            <form th:action="@{/login}" method="POST" class="space-y-3">
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700">
+                        Email <span class="text-red-500">*</span>
+                    </label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email" required
+                           class="mt-1 block w-full py-3 px-4 border border-gray-300 rounded-md focus:outline-none focus:border-[#480028]">
+                </div>
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700">
+                        Password <span class="text-red-500">*</span>
+                    </label>
+                    <input type="password" id="password" name="password" placeholder="Username@12345#!" required
+                           class="mt-1 block w-full py-3 px-4 border border-gray-300 rounded-md focus:outline-none focus:border-[#480028]">
+                </div>
+                <div class="flex items-center justify-end">
+                    <a th:href="@{/forgot-password}" class="text-sm text-[#480028] font-normal underline">Forgot password?</a>
+                </div>
+                <button type="submit" class="w-full bg-[#480028] text-white rounded-md hover:bg-[#480028] focus:outline-none py-3 px-4">
+                    Login
+                </button>
+            </form>
+            <div class="flex items-center justify-center my-3 md:my-6">
+                <hr class="flex-grow border-t border-gray-300">
+                <span class="px-4 text-sm text-gray-500">or</span>
+                <hr class="flex-grow border-t border-gray-300">
+            </div>
+            <button class="w-full bg-gray-100 text-black border-[#480028] border-[1px] rounded-md hover:bg-gray-200 outline-none py-3 px-4">
+                Login with Google
+            </button>
+            <p class="text-center text-sm text-gray-600 my-3 md:my-6">
+                Don't have an account?
+                <a th:href="@{/register-organizer}" id="register-link" class="text-[#480028] underline"
+                   onclick="triggerReverseAnimation(event, '@{/register-organizer}')">
+                    Register
+                </a>
+            </p>
+        </section>
+    </section>
+</main>
+
+<script>
+    window.onload = function () {
+        const animatedDiv = document.getElementById("expandable-circle");
+        animatedDiv.classList.add("animate-expand");
+    };
+
+    function triggerReverseAnimation(event, targetUrl) {
+        event.preventDefault();
+
+        const animatedDiv = document.getElementById("expandable-circle");
+        animatedDiv.classList.remove("animate-expand");
+        animatedDiv.classList.add("animate-reverse-expand");
+
+        setTimeout(() => {
+            window.location.href = targetUrl;
+        }, 1000);
+    }
+</script>
+
+</body>
+</html>

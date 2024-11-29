@@ -13,6 +13,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByUsername(String username);
 
     Optional<User> findByUsernameAndIsEnabledTrue(String username);
+    Optional<User> findByPhoneNumberAndIsEnabledTrue(String username);
 
     Optional<User> findByUsernameAndIsEnabledFalse(String username);
 

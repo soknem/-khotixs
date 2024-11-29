@@ -62,7 +62,7 @@ public class Init {
             Set<Authority> authorities = authorityRepository.findByAuthorityNameIn(authorityNames);
 
             // Create roles and assign authorities
-            Role userRole = saveRole("user", "user role", authorities);
+            Role userRole = saveRole("USER", "user role", authorities);
 
             // Create admin user
             User user = User.builder()
@@ -83,8 +83,6 @@ public class Init {
                     .accountNonExpired(true)
                     .accountNonLocked(true)
                     .credentialsNonExpired(true)
-                    .createdDate(LocalDateTime.now())
-                    .createdBy("system")
                     .build();
 
             UserRole defaultUsrRole = new UserRole();
@@ -136,8 +134,6 @@ public class Init {
                     .accountNonExpired(true)
                     .accountNonLocked(true)
                     .credentialsNonExpired(true)
-                    .createdDate(LocalDateTime.now())
-                    .createdBy("system")
                     .build();
 
             UserRole adminUserRole = new UserRole();

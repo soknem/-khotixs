@@ -1,6 +1,7 @@
 package com.khotixs.identity_service.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.khotixs.identity_service.config.jpa.Auditable;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -13,7 +14,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Authority {
+public class Authority extends Auditable<String> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
