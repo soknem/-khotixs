@@ -60,7 +60,8 @@ public class SecurityConfig {
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .cors(ServerHttpSecurity.CorsSpec::disable)
                 .logout(logoutSpec -> logoutSpec
-                        .logoutSuccessHandler(serverLogoutSuccessHandler()));
+                        .logoutSuccessHandler(serverLogoutSuccessHandler())
+                );
 
         return http.build();
     }

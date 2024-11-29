@@ -1,6 +1,7 @@
 package com.khotixs.identity_service.feature.auth2;
 
 import com.khotixs.identity_service.feature.auth2.dto.ChangeForgotPasswordRequest;
+import com.khotixs.identity_service.feature.auth2.dto.ChangePasswordRequest;
 import com.khotixs.identity_service.feature.auth2.dto.ForgotPasswordRequest;
 import com.khotixs.identity_service.feature.user.dto.CustomerUserRegisterRequest;
 import com.khotixs.identity_service.feature.user.dto.CustomerUserWithPhoneNumberRegisterRequest;
@@ -50,5 +51,10 @@ public class AuthController {
     @PostMapping("/change-forgot-password")
     public void changeForgotPassword(@RequestBody ChangeForgotPasswordRequest changeForgotPasswordRequest){
         authService.changeForgotPassword(changeForgotPasswordRequest);
+    }
+
+    @PostMapping("/change-password")
+    public void changePassword(Authentication authentication, @RequestBody ChangePasswordRequest changePasswordRequest){
+        authService.changePassword(authentication,changePasswordRequest);
     }
 }

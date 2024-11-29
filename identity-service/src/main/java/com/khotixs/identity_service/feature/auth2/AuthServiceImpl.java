@@ -215,6 +215,9 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public void isNotAuthenticated(Authentication authentication) {
 
+        if(authentication==null){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"user is not authenticated");
+        }
     }
 
     public void checkTermsAndConditions(String value) {

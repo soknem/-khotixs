@@ -104,6 +104,14 @@ public class SecurityConfig {
                         .usernameParameter("gp_account")
                         .passwordParameter("gp_password")
                 )*/
+
+                // Configure logout and redirect after successful logout
+                .logout(logout -> logout
+                        .logoutUrl("/logout")  // The logout URL
+                        .logoutSuccessUrl("http://localhost:8000")  // Redirect to /login?logout after successful logout
+                        .invalidateHttpSession(true)  // Invalidate the session
+                        .clearAuthentication(true)  // Clear the authentication
+                )
                 .cors(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable);
 
